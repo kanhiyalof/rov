@@ -42,8 +42,8 @@ uint8_t receiverAddress[] = {
 // trusting reverse/forward behavior.
 // ==================================================
 
-#define X_CENTER 829
-#define Y_CENTER 512
+#define X_CENTER 750
+#define Y_CENTER 770
 
 #define DEAD_ZONE 100
 
