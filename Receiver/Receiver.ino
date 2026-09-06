@@ -31,27 +31,22 @@
 // JOYSTICK X CALIBRATION
 // ==================================================
 
-#define X_LEFT   3
-#define X_CENTER 750
-#define X_RIGHT  1024
+#define X_LEFT   0
+#define X_CENTER 770
+#define X_RIGHT  1023
 
 // ==================================================
 // JOYSTICK Y CALIBRATION
 //
-// The transmitter's Y axis used to be wired to a pin
-// that couldn't actually do analogRead() (ESP8266 "D1"
-// / ESP32 "D1" both turned out not to be real ADC
-// pins), so this was pinned at 1023 - the ADC's max -
-// which left no room to ever detect a "pushed backward"
-// reading. Now that Y is wired to a real ADC1 pin on
-// the transmitter, re-measure the true idle/min/max
-// with the serial monitor and correct these three
-// values before trusting reverse behavior.
+// Measured directly: pushing backward drove the raw
+// reading to 0, pushing forward drove it to 1023 - high
+// means forward on this wiring, opposite of the original
+// placeholder assumption.
 // ==================================================
 
-#define Y_BACKWARD 1023
-#define Y_CENTER   770
-#define Y_FORWARD  0
+#define Y_BACKWARD 0
+#define Y_CENTER   750
+#define Y_FORWARD  1023
 
 // ==================================================
 // DEAD ZONE
@@ -304,26 +299,26 @@ void loop() {
   int throttle = 0;
 
   // FORWARD
-  if (y < Y_CENTER - DEAD_ZONE) {
-
-    throttle = map(
-      y,
-      Y_FORWARD,
-      Y_CENTER - DEAD_ZONE,
-      MAX_SPEED,
-      0
-    );
-  }
-
-  // REVERSE
-  else if (y > Y_CENTER + DEAD_ZONE) {
+  if (y > Y_CENTER + DEAD_ZONE) {
 
     throttle = map(
       y,
       Y_CENTER + DEAD_ZONE,
-      Y_BACKWARD,
+      Y_FORWARD,
       0,
-      -MAX_SPEED
+      MAX_SPEED
+    );
+  }
+
+  // REVERSE
+  else if (y < Y_CENTER - DEAD_ZONE) {
+
+    throttle = map(
+      y,
+      Y_BACKWARD,
+      Y_CENTER - DEAD_ZONE,
+      -MAX_SPEED,
+      0
     );
   }
 

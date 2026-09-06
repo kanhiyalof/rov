@@ -14,10 +14,17 @@
 // analogRead() while WiFi is active, which ESP-NOW
 // requires - they silently return garbage/0 whenever
 // the radio is on.
+//
+// Measured behavior showed the two pots were crossed:
+// pushing the stick left/right moved the reading on
+// pin 36, and pushing it forward/back moved the
+// reading on pin 34 - the opposite of what the names
+// originally assumed. Swapped here in software so no
+// rewiring is needed.
 // ==================================================
 
-#define JOY_X   36   // ADC1_CH0 - same physical pin the old "A0" alias used
-#define JOY_Y   34   // ADC1_CH6 - previously "D1", which was NOT a working ADC pin
+#define JOY_X   34   // reads the left/right pot
+#define JOY_Y   36   // reads the forward/back pot
 #define JOY_SW  27   // plain digital input, ADC channel doesn't matter here
 
 // ==================================================
@@ -35,15 +42,12 @@ uint8_t receiverAddress[] = {
 // same 0-1023 scale the ESP8266 receiver's mapping code
 // expects (ESP32's ADC defaults to 12-bit / 0-4095).
 //
-// X_CENTER carries over from the old board's X pot.
-// Y_CENTER is a generic mid-scale placeholder for the
-// newly-wired Y pin - re-measure it with the serial
-// monitor (read rawY at rest) and correct it before
-// trusting reverse/forward behavior.
+// Measured idle readings after the pin swap above:
+// pin 34 (X) idles ~770, pin 36 (Y) idles ~750.
 // ==================================================
 
-#define X_CENTER 750
-#define Y_CENTER 770
+#define X_CENTER 770
+#define Y_CENTER 750
 
 #define DEAD_ZONE 100
 
